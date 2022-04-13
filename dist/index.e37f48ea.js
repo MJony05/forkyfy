@@ -523,6 +523,8 @@ var _recipeViewJs = require("./views/recipeView.js");
 var _recipeViewJsDefault = parcelHelpers.interopDefault(_recipeViewJs);
 var _searchViewJs = require("./views/searchView.js");
 var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
+var _resultsView = require("./views/resultsView");
+var _resultsViewDefault = parcelHelpers.interopDefault(_resultsView);
 const { async  } = require('regenerator-runtime');
 const timeout = function(s) {
     return new Promise(function(_, reject) {
@@ -549,8 +551,9 @@ const showRecipe = async function() {
 _recipeViewJsDefault.default.addHandEvent(showRecipe);
 const searchController = async function() {
     const inputValue = _searchViewJsDefault.default.getQuery();
-    _modelJs.searchResult(inputValue);
-    console.log(inputValue);
+    await _modelJs.searchResult(inputValue);
+    _resultsViewDefault.default.render(_modelJs.state.search.results);
+// console.log(inputValue);
 };
 _searchViewJsDefault.default.addHandlerEvent(searchController); /** 
 const renderIng = function (ings) {
@@ -653,7 +656,7 @@ window.addEventListener('hashchange', showRecipe);
 window.addEventListener('load', showRecipe);
 */ 
 
-},{"../img/icons.svg":"cMpiy","./model.js":"Y4A21","regenerator-runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/recipeView.js":"l60JC","./views/searchView.js":"9OQAM"}],"cMpiy":[function(require,module,exports) {
+},{"../img/icons.svg":"cMpiy","./model.js":"Y4A21","regenerator-runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/recipeView.js":"l60JC","./views/searchView.js":"9OQAM","./views/resultsView":"cSbZE"}],"cMpiy":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('hWUTQ') + "icons.21bad73c.svg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
@@ -706,7 +709,7 @@ const state = {
     recipes: {},
     search: {
         query: '',
-        data: []
+        results: {}
     }
 };
 const loadRecipe = async function(id) {
@@ -730,7 +733,16 @@ const loadRecipe = async function(id) {
 const searchResult = async function(searchKey) {
     try {
         const data = await _helpersJs.getJSON(_configJs.API_URL + `?search=${searchKey}`);
-        console.log(data);
+        const getArr = data.data.recipes;
+        // console.log(data.data.recipes);
+        state.search.results = getArr.map((val)=>{
+            return {
+                id: val.id,
+                image: val.image_url,
+                publisher: val.publisher,
+                title: val.title
+            };
+        });
     } catch (err) {
         throw err;
     }
@@ -1357,7 +1369,7 @@ const timeout = function(s) {
     });
 };
 const getJSON = async function(url) {
-    console.log(url);
+    // console.log(url);
     try {
         const response = await Promise.race([
             fetch(url),
@@ -1527,6 +1539,47 @@ class SearchView {
 }
 exports.default = new SearchView();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ddCAb","aenu9"], "aenu9", "parcelRequire6201")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cSbZE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _iconsSvg = require("../../img/icons.svg"); // Parcel
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class ResultsView {
+    #parentElement = document.querySelector('.results');
+    #data;
+    render(data) {
+        this.#data = data;
+        console.log(data);
+        this.#clearHTML;
+        this.#data.map((val)=>{
+            this.#generateHTML(val);
+        });
+    }
+     #clearHTML() {
+        this.#parentElement.innerHTML = '';
+    }
+     #generateHTML(data) {
+        const html = `<li class="preview">
+    <a class="preview__link preview__link--active" href="#${data.id}">
+      <figure class="preview__fig">
+        <img src="${data.image}" alt="Test" />
+      </figure>
+      <div class="preview__data">
+        <h4 class="preview__title">${data.title}</h4>
+        <p class="preview__publisher">${data.publisher}</p>
+        <div class="preview__user-generated">
+          <svg>
+            <use href="${_iconsSvgDefault.default}#icon-user"></use>
+          </svg>
+        </div>
+      </div>
+    </a>
+  </li>`;
+        this.#parentElement.insertAdjacentHTML('afterbegin', html);
+    }
+}
+exports.default = new ResultsView();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../img/icons.svg":"cMpiy"}]},["ddCAb","aenu9"], "aenu9", "parcelRequire6201")
 
 //# sourceMappingURL=index.e37f48ea.js.map

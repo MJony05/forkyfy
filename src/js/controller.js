@@ -5,6 +5,7 @@ import { state, searchResult } from './model.js';
 import { loadRecipe } from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
+import resultsView from './views/resultsView';
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -36,8 +37,9 @@ recipeView.addHandEvent(showRecipe);
 
 const searchController = async function () {
   const inputValue = searchView.getQuery();
-  searchResult(inputValue);
-  console.log(inputValue);
+  await searchResult(inputValue);
+  resultsView.render(state.search.results);
+  // console.log(inputValue);
 };
 searchView.addHandlerEvent(searchController);
 
