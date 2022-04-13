@@ -3,6 +3,10 @@ import { API_URL } from './config.js';
 import { getJSON } from './helpers.js';
 export const state = {
   recipes: {},
+  search: {
+    query: '',
+    data: [],
+  },
 };
 
 export const loadRecipe = async function (id) {
@@ -19,6 +23,15 @@ export const loadRecipe = async function (id) {
       ingredients: obj.ingredients,
       image: obj.image_url,
     };
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const searchResult = async function (searchKey) {
+  try {
+    const data = await getJSON(API_URL + `?search=${searchKey}`);
+    console.log(data);
   } catch (err) {
     throw err;
   }

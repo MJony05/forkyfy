@@ -1,10 +1,10 @@
 const { async } = require('regenerator-runtime');
 import icons from '../img/icons.svg'; // Parcel
 // import icons from 'url:../img/icons.svg';
-import { state } from './model.js';
+import { state, searchResult } from './model.js';
 import { loadRecipe } from './model.js';
 import recipeView from './views/recipeView.js';
-
+import searchView from './views/searchView.js';
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -33,6 +33,14 @@ const showRecipe = async function () {
   }
 };
 recipeView.addHandEvent(showRecipe);
+
+const searchController = async function () {
+  const inputValue = searchView.getQuery();
+  searchResult(inputValue);
+  console.log(inputValue);
+};
+searchView.addHandlerEvent(searchController);
+
 /** 
 const renderIng = function (ings) {
   return ings.map(

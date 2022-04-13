@@ -521,6 +521,8 @@ var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 var _modelJs = require("./model.js");
 var _recipeViewJs = require("./views/recipeView.js");
 var _recipeViewJsDefault = parcelHelpers.interopDefault(_recipeViewJs);
+var _searchViewJs = require("./views/searchView.js");
+var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
 const { async  } = require('regenerator-runtime');
 const timeout = function(s) {
     return new Promise(function(_, reject) {
@@ -544,7 +546,13 @@ const showRecipe = async function() {
         throw err;
     }
 };
-_recipeViewJsDefault.default.addHandEvent(showRecipe); /** 
+_recipeViewJsDefault.default.addHandEvent(showRecipe);
+const searchController = async function() {
+    const inputValue = _searchViewJsDefault.default.getQuery();
+    _modelJs.searchResult(inputValue);
+    console.log(inputValue);
+};
+_searchViewJsDefault.default.addHandlerEvent(searchController); /** 
 const renderIng = function (ings) {
   return ings.map(
     val => `<li class="recipe__ingredient">
@@ -645,7 +653,7 @@ window.addEventListener('hashchange', showRecipe);
 window.addEventListener('load', showRecipe);
 */ 
 
-},{"../img/icons.svg":"cMpiy","./model.js":"Y4A21","regenerator-runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/recipeView.js":"l60JC"}],"cMpiy":[function(require,module,exports) {
+},{"../img/icons.svg":"cMpiy","./model.js":"Y4A21","regenerator-runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/recipeView.js":"l60JC","./views/searchView.js":"9OQAM"}],"cMpiy":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('hWUTQ') + "icons.21bad73c.svg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
@@ -689,11 +697,17 @@ parcelHelpers.export(exports, "state", ()=>state
 );
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe
 );
+parcelHelpers.export(exports, "searchResult", ()=>searchResult
+);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
 const state = {
-    recipes: {}
+    recipes: {},
+    search: {
+        query: '',
+        data: []
+    }
 };
 const loadRecipe = async function(id) {
     try {
@@ -709,6 +723,14 @@ const loadRecipe = async function(id) {
             ingredients: obj.ingredients,
             image: obj.image_url
         };
+    } catch (err) {
+        throw err;
+    }
+};
+const searchResult = async function(searchKey) {
+    try {
+        const data = await _helpersJs.getJSON(_configJs.API_URL + `?search=${searchKey}`);
+        console.log(data);
     } catch (err) {
         throw err;
     }
@@ -1317,7 +1339,7 @@ parcelHelpers.export(exports, "API_URL", ()=>API_URL
 );
 parcelHelpers.export(exports, "TIMEOUT_SEC", ()=>TIMEOUT_SEC
 );
-const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/1';
+const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
 const TIMEOUT_SEC = 5;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hGI1E":[function(require,module,exports) {
@@ -1335,6 +1357,7 @@ const timeout = function(s) {
     });
 };
 const getJSON = async function(url) {
+    console.log(url);
     try {
         const response = await Promise.race([
             fetch(url),
@@ -1486,6 +1509,24 @@ class RecipeView {
 }
 exports.default = new RecipeView();
 
-},{"../../img/icons.svg":"cMpiy","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ddCAb","aenu9"], "aenu9", "parcelRequire6201")
+},{"../../img/icons.svg":"cMpiy","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9OQAM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class SearchView {
+    #parentElement = document.querySelector('.search');
+    getQuery() {
+        const val = document.querySelector('.search__field').value;
+        return val;
+    }
+    addHandlerEvent(handle) {
+        this.#parentElement.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handle();
+        });
+    }
+}
+exports.default = new SearchView();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ddCAb","aenu9"], "aenu9", "parcelRequire6201")
 
 //# sourceMappingURL=index.e37f48ea.js.map
