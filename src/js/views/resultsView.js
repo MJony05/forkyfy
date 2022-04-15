@@ -1,33 +1,26 @@
-import icons from '../../img/icons.svg'; // Parcel
-class ResultsView {
-  #parentElement = document.querySelector('.results');
-  #data;
-  render(data) {
-    this.#data = data;
-    console.log(data);
-    this.#clearHTML;
-    this.#data.map(val => {
-      this.#generateHTML(val);
-    });
+import View from './View.js';
+
+import icons from '../../img/icons.svg';
+class ResultsView extends View {
+  _parentElement = document.querySelector('.results');
+
+  _errorMessage = 'No recipes found for your query! Please try again ;)';
+  _generateMarkup() {
+    return this._data.map(this._generateMarkupPreview).join('');
   }
-  #clearHTML() {
-    this.#parentElement.innerHTML = '';
-  }
-  #generateHTML(data) {
-    const html = `<li class="preview">
-    <a class="preview__link preview__link--active" href="#${data.id}">
+  _generateMarkupPreview(result) {
+    return `
+    <li class="preview">
+    <a class="preview__link" href="#${result.id}">
       <figure class="preview__fig">
-        <img src="${data.image}" alt="Test" />
+        <img src="${result.image}" alt="${result.title}" />
       </figure>
       <div class="preview__data">
-        <h4 class="preview__title">${data.title}</h4>
-        <p class="preview__publisher">${data.publisher}</p>
-        
+        <h4 class="preview__title">${result.title}</h4>
+        <p class="preview__publisher">${result.publisher}</p>
       </div>
     </a>
   </li>`;
-
-    this.#parentElement.insertAdjacentHTML('afterbegin', html);
   }
 }
 export default new ResultsView();

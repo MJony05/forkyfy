@@ -1,47 +1,57 @@
 import { async } from 'regenerator-runtime';
-import { API_URL } from './config.js';
-import { getJSON } from './helpers.js';
+import { API_URL, RES_PER_PAGE } from './config.js';
+
 export const state = {
-  recipes: {},
+  recipe: {},
   search: {
     query: '',
-    results: {},
+    results: [],
+    page: 1,
+    resultPerPage: RES_PER_PAGE,
   },
 };
-
+import { getJSON } from './helpers.js';
 export const loadRecipe = async function (id) {
   try {
-    const data = await getJSON(API_URL + id);
-    const obj = data.data.recipe;
-    state.recipes = {
-      id: obj.id,
-      time: obj.cooking_time,
-      publisher: obj.publisher,
-      title: obj.title,
-      servings: obj.servings,
-      source_url: obj.source_url,
-      ingredients: obj.ingredients,
-      image: obj.image_url,
+    const data = await getJSON(`${API_URL}/${id}`);
+    const { recipe } = data.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients,
+      image: recipe.image_url,
     };
   } catch (err) {
-    throw err;
+    console.log(err);
   }
 };
 
-export const searchResult = async function (searchKey) {
+export const loadSearchResult = async function (query) {
   try {
-    const data = await getJSON(API_URL + `?search=${searchKey}`);
-    const getArr = data.data.recipes;
-    // console.log(data.data.recipes);
-    state.search.results = getArr.map(val => {
+    state.search.query = query;
+    const data = await getJSON(`${API_URL}?search=${query}`);
+    state.search.results = data.data.recipes.map(rec => {
       return {
-        id: val.id,
-        image: val.image_url,
-        publisher: val.publisher,
-        title: val.title,
+        id: rec.id,
+        title: rec.title,
+        publisher: rec.publisher,
+        image: rec.image_url,
       };
     });
   } catch (err) {
     throw err;
   }
+};
+
+export const getSearchResultPage = function (page = state.search.page) {
+  state.search.page = page;
+
+  const start = (page - 1) * state.search.resultPerPage; //0;
+  const end = page * state.search.resultPerPage; //9;
+  console.log(start, end);
+  return state.search.results.slice(start, end);
 };
