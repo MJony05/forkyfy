@@ -548,16 +548,21 @@ const controlSearchResult = async function() {
         await _modelJs.loadSearchResult(query);
         // 3) render result
         // resultsView.render(model.state.search.results);
-        _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage());
+        _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage(3));
         _paginationViewJsDefault.default.render(_modelJs.state.search);
     } catch (err) {
         throw err;
     }
 };
+const pagination = function(goto) {
+    _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage(goto));
+    _paginationViewJsDefault.default.render(_modelJs.state.search);
+};
 // controlSearchResult();
 const init = function() {
     _searchViewJsDefault.default.addHandler(controlSearchResult);
     _recipeViewJsDefault.default.addHandlerRender(controlRecipes);
+    _paginationViewJsDefault.default._pagination(pagination);
 };
 init(); // window.addEventListener('hashchange', showRecipe);
  // window.addEventListener('load', showRecipe);
@@ -1528,7 +1533,42 @@ class PaginationView extends _viewJsDefault.default {
     _parentElement = document.querySelector('.pagination');
     _generateMarkup() {
         const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage);
-        console.log(numPages);
+        if (numPages > 1 && this._data.page === 1) return ` <button class="btn--inline pagination__btn--next" data-goto="${this._data.page + 1}">
+      <span>Page ${this._data.page + 1}</span>
+      <svg class="search__icon">
+        <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>
+      </svg>
+    </button>`;
+        else if (numPages > this._data.page && numPages > 1) return `<button class="btn--inline pagination__btn--prev" data-goto="${this._data.page - 1}">
+      <svg class="search__icon">
+        <use href="${_iconsSvgDefault.default}#icon-arrow-left"></use>
+      </svg>
+      <span>Page ${this._data.page - 1}</span>
+    </button> <button class="btn--inline pagination__btn--next" data-goto="${this._data.page + 1}">
+      <span>Page ${this._data.page + 1}</span>
+      <svg class="search__icon">
+        <use href="${_iconsSvgDefault.default}#icon-arrow-right"></use>
+      </svg>
+    </button>`;
+        else if (numPages == this._data.page && numPages > 1) return `<button class="btn--inline pagination__btn--prev" data-goto="${this._data.page - 1}">
+      <svg class="search__icon">
+        <use href="${_iconsSvgDefault.default}#icon-arrow-left"></use>
+      </svg>
+      <span>Page ${this._data.page - 1}</span>
+    </button>`;
+        else return ``;
+    }
+    _pagination(handler) {
+        this._parentElement.addEventListener('click', (e)=>{
+            e.preventDefault();
+            if (e.target.closest('.btn--inline')) {
+                let btn = e.target.closest('.btn--inline');
+                const gotoPage = +btn.dataset.goto;
+                console.log(gotoPage);
+                console.log(btn);
+                handler(gotoPage);
+            }
+        });
     }
 }
 exports.default = new PaginationView();
