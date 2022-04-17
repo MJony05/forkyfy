@@ -548,7 +548,7 @@ const controlSearchResult = async function() {
         await _modelJs.loadSearchResult(query);
         // 3) render result
         // resultsView.render(model.state.search.results);
-        _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage(3));
+        _resultsViewJsDefault.default.render(_modelJs.getSearchResultPage());
         _paginationViewJsDefault.default.render(_modelJs.state.search);
     } catch (err) {
         throw err;
@@ -559,10 +559,17 @@ const pagination = function(goto) {
     _paginationViewJsDefault.default.render(_modelJs.state.search);
 };
 // controlSearchResult();
+const controlServings = function() {
+    // update the recipe servongs (in state)
+    _modelJs.updateServings(6);
+    // update the recipe view
+    _recipeViewJsDefault.default.render(_modelJs.state.recipe);
+};
 const init = function() {
     _searchViewJsDefault.default.addHandler(controlSearchResult);
     _recipeViewJsDefault.default.addHandlerRender(controlRecipes);
     _paginationViewJsDefault.default._pagination(pagination);
+    controlServings();
 };
 init(); // window.addEventListener('hashchange', showRecipe);
  // window.addEventListener('load', showRecipe);
@@ -1144,6 +1151,8 @@ parcelHelpers.export(exports, "loadSearchResult", ()=>loadSearchResult
 );
 parcelHelpers.export(exports, "getSearchResultPage", ()=>getSearchResultPage
 );
+parcelHelpers.export(exports, "updateServings", ()=>updateServings
+);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
@@ -1196,6 +1205,12 @@ const getSearchResultPage = function(page = state.search.page) {
     const end = page * state.search.resultPerPage; //9;
     console.log(start, end);
     return state.search.results.slice(start, end);
+};
+const updateServings = function(newServings) {
+    state.recipe.ingredients.forEach((ing)=>{
+        ing.quantity = ing.quantity * newServings / state.recipe.servings;
+    });
+    state.recipe.servings = newServings;
 };
 
 },{"regenerator-runtime":"dXNgZ","./config.js":"k5Hzs","./helpers.js":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
