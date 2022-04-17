@@ -7,7 +7,7 @@ export class RecipeView extends View {
   addHandlerRender(func) {
     ['hashchange', 'load'].forEach(e => window.addEventListener(e, func));
   }
-
+  addHandlerUpdateServings(handler) {}
   _generateMarkup() {
     return ` <figure class="recipe__fig">
     <img src="${this._data.image}" alt="Tomato" class="recipe__img" />

@@ -1303,6 +1303,7 @@ class RecipeView extends _viewJsDefault.default {
         ].forEach((e)=>window.addEventListener(e, func)
         );
     }
+    addHandlerUpdateServings(handler) {}
     _generateMarkup() {
         return ` <figure class="recipe__fig">
     <img src="${this._data.image}" alt="Tomato" class="recipe__img" />
