@@ -53,7 +53,7 @@ const pagination = function (goto) {
 const controlServings = function () {
   // update the recipe servongs (in state)
 
-  model.updateServings(6);
+  model.updateServings(4);
 
   // update the recipe view
 

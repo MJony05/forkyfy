@@ -561,7 +561,7 @@ const pagination = function(goto) {
 // controlSearchResult();
 const controlServings = function() {
     // update the recipe servongs (in state)
-    _modelJs.updateServings(6);
+    _modelJs.updateServings(4);
     // update the recipe view
     _recipeViewJsDefault.default.render(_modelJs.state.recipe);
 };
