@@ -536,6 +536,7 @@ const controlRecipes = async function() {
         await _modelJs.loadRecipe(id);
         // 2) Rendering recipe
         _recipeViewJsDefault.default.render(_modelJs.state.recipe);
+        controlServings();
     } catch (err) {
         _recipeViewJsDefault.default.errorHandling();
     }
@@ -561,7 +562,7 @@ const pagination = function(goto) {
 // controlSearchResult();
 const controlServings = function() {
     // update the recipe servongs (in state)
-    _modelJs.updateServings(4);
+    _modelJs.updateServings(10);
     // update the recipe view
     _recipeViewJsDefault.default.render(_modelJs.state.recipe);
 };
@@ -569,7 +570,6 @@ const init = function() {
     _searchViewJsDefault.default.addHandler(controlSearchResult);
     _recipeViewJsDefault.default.addHandlerRender(controlRecipes);
     _paginationViewJsDefault.default._pagination(pagination);
-    controlServings();
 };
 init(); // window.addEventListener('hashchange', showRecipe);
  // window.addEventListener('load', showRecipe);
@@ -1303,7 +1303,11 @@ class RecipeView extends _viewJsDefault.default {
         ].forEach((e)=>window.addEventListener(e, func)
         );
     }
-    addHandlerUpdateServings(handler) {}
+    addHandlerUpdateServings(handler) {
+        this._parentElement.addEventListener('click', (e)=>{
+            const btn = e.target.closest('.');
+        });
+    }
     _generateMarkup() {
         return ` <figure class="recipe__fig">
     <img src="${this._data.image}" alt="Tomato" class="recipe__img" />
