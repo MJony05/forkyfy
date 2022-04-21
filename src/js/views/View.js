@@ -9,7 +9,19 @@ export default class View {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
+  update(data) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.errorHandling();
+    this._data = data;
+    const newMarkup = this._generateMarkup();
 
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    console.log(newElements);
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+    console.log(curElements);
+  }
   _clear() {
     this._parentElement.innerHTML = '';
   }
